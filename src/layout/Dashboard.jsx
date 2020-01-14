@@ -36,6 +36,7 @@ import Food from '../pages/Food';
 import Home from '../pages/Home';
 import Study from '../pages/Study';
 import LoginDialog from '../components/LoginDialog';
+import RegisterDialog from '../components/RegisterDialog';
 
 const drawerWidth = 240;
 
@@ -119,7 +120,7 @@ const useStyles = makeStyles(theme => ({
   fixedHeight: {
     height: 240,
   },
-  headerButton:{
+  headerButton: {
     '&:focus': {
       outline: 'none',
     },
@@ -130,19 +131,19 @@ export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const [showLoginDialog, setShowLoginDialog] = React.useState(false);
+  const [showRegisterDialog, setShowRegisterDialog] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const handleOpenLoginDialog = () =>{
+  const handleOpenLoginDialog = () => {
     setShowLoginDialog(true)
   };
   const history = useHistory();
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton
@@ -155,17 +156,26 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            [家庭名字]
+            [家庭名字 + Logo]
           </Typography>
-          <IconButton color="inherit" 
-            className={classes.headerButton} 
+          <IconButton color="inherit"
+            className={classes.headerButton}
             onClick={() => handleOpenLoginDialog()}
           >
             <PersonIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
-      <LoginDialog/>
+      <LoginDialog
+        open={showLoginDialog}
+        handleClose={() => setShowLoginDialog(false)}
+        handleOpenRegister={() => setShowRegisterDialog(true)}
+      />
+      <RegisterDialog
+        open={showRegisterDialog}
+        handleClose={() => setShowRegisterDialog(false)}
+        handleOpenLogin={() => setShowLoginDialog(true)}
+      />
       <Drawer
         variant="permanent"
         classes={{

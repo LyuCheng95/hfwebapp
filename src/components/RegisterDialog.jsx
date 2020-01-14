@@ -40,22 +40,22 @@ const useStyles = makeStyles(theme => ({
       outline: 'none'
     },
   },
-  links:{
+  links: {
     color: '#3f51b5',
     cursor: 'pointer',
     fontSize: '0.9rem',
-    '&:hover':{
+    '&:hover': {
       textDecoration: 'underline',
-    }
+    },
   }
 }));
 
-export default function LoginDialog({ open, handleClose, handleOpenRegister }) {
+export default function RegisterDialog({ open, handleClose, handleOpenLogin }) {
   const classes = useStyles();
-  const handleClickRegister=()=>{
+  const handleClickLogin = () => {
     handleClose();
-    handleOpenRegister();
-  };
+    handleOpenLogin();
+  }
   return (
     <Dialog open={open} >
       <DialogTitle>
@@ -69,7 +69,7 @@ export default function LoginDialog({ open, handleClose, handleOpenRegister }) {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            登录
+            注册
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
@@ -80,7 +80,7 @@ export default function LoginDialog({ open, handleClose, handleOpenRegister }) {
               id="email"
               label="邮箱地址"
               name="email"
-              autoComplete="email"
+              autoComplete="xxx@xxx.com"
               autoFocus
             />
             <TextField
@@ -94,6 +94,17 @@ export default function LoginDialog({ open, handleClose, handleOpenRegister }) {
               id="password"
               autoComplete="current-password"
             />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="重复密码"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
             <Button
               type="submit"
               fullWidth
@@ -101,20 +112,15 @@ export default function LoginDialog({ open, handleClose, handleOpenRegister }) {
               color="primary"
               className={classes.submit}
             >
-              登录
+              注册
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Typography>
-                  忘记密码?
-                </Typography>
-              </Grid>
               <Grid item>
-                <Typography 
-                  onClick={handleClickRegister}
+                <Typography
+                  onClick={handleClickLogin}
                   className={classes.links}
                 >
-                  {"已有帐号？ 前去注册 >>"}
+                  已有帐号？前去登录 >>
                 </Typography>
               </Grid>
             </Grid>
