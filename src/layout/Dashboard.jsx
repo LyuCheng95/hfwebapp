@@ -42,6 +42,8 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
+    overflow: 'hidden',
+    height: '100vh',
     display: 'flex',
   },
   toolbar: {
@@ -103,8 +105,8 @@ const useStyles = makeStyles(theme => ({
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
+    marginTop: '64px',
     flexGrow: 1,
-    height: '100vh',
     overflow: 'auto',
   },
   container: {
@@ -129,7 +131,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Dashboard() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [showLoginDialog, setShowLoginDialog] = React.useState(false);
   const [showRegisterDialog, setShowRegisterDialog] = React.useState(false);
   const handleDrawerOpen = () => {
@@ -217,7 +219,6 @@ export default function Dashboard() {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Switch>
             <Route exact path="/" component={Home} />

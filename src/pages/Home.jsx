@@ -1,7 +1,15 @@
 import React from 'react';
-import HomeCarousel from '../components/HomeCarousel'
-export default function Home(){
+import HomeCarousel from '../components/HomeCarousel';
+import Card from '@material-ui/core/Card';
+import Grid from '@material-ui/core/Grid';
+export default function Home() {
     return (
-        <HomeCarousel/>
+        <Card>
+            <Grid container>
+                <Grid item xs={7}>
+                    <HomeCarousel />
+                </Grid>
+            </Grid>
+        </Card>
     );
 }
