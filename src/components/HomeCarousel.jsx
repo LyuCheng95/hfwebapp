@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel'
 import terrace1 from '../assets/terrace1.jpg';
 import terrace2 from '../assets/terrace2.jpg';
@@ -14,19 +14,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function HomeCarousel() {
   const images = [
-    { id: 1, src:  terrace1 , title: '标题', content: '介绍' },
-    { id: 2, src:  terrace2 , title: '标题', content: '介绍' },
-    { id: 3, src:  terrace3 , title: '标题', content: '介绍' },
-    { id: 4, src:  terrace4 , title: '标题', content: '介绍' },
-    { id: 5, src:  terrace5 , title: '标题', content: '介绍' },
-    { id: 6, src:  terrace6 , title: '标题', content: '介绍' },
-    { id: 7, src:  terrace7 , title: '标题', content: '介绍' },
-    { id: 8, src:  terrace8 , title: '标题', content: '介绍' },
-    { id: 9, src: terrace9 , title: '标题', content: '介绍' },
-    { id: 10, src:  terrace10 , title: '标题', content: '介绍' },
+    { id: 1, src: terrace1, title: '标题', content: '介绍' },
+    { id: 2, src: terrace2, title: '标题', content: '介绍' },
+    { id: 3, src: terrace3, title: '标题', content: '介绍' },
+    { id: 4, src: terrace4, title: '标题', content: '介绍' },
+    // { id: 5, src: terrace5, title: '标题', content: '介绍' },
+    // { id: 6, src: terrace6, title: '标题', content: '介绍' },
+    // { id: 7, src: terrace7, title: '标题', content: '介绍' },
+    // { id: 8, src: terrace8, title: '标题', content: '介绍' },
+    // { id: 9, src: terrace9, title: '标题', content: '介绍' },
+    // { id: 10, src: terrace10, title: '标题', content: '介绍' },
   ];
+  const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState(null);
+
+  const handleSelect = (selectedIndex, e) => {
+    setIndex(selectedIndex);
+    setDirection(e.direction);
+  };
   return (
-    <Carousel>
+    <Carousel activeIndex={index} direction={direction} onSelect={handleSelect}>
       {images.map(image => {
         return (
           <Carousel.Item>
