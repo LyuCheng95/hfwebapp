@@ -22,9 +22,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import DeleteIcon from '@material-ui/icons/Delete';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import {
   Switch,
   Route,
@@ -35,6 +36,7 @@ import Attendance from '../pages/Attendance';
 import Food from '../pages/Food';
 import Home from '../pages/Home';
 import Study from '../pages/Study';
+import Clean from '../pages/Clean';
 import LoginDialog from '../components/LoginDialog';
 import RegisterDialog from '../components/RegisterDialog';
 
@@ -200,21 +202,27 @@ export default function Dashboard() {
           </ListItem>
           <ListItem button onClick={() => history.push('/food')}>
             <ListItemIcon>
-              <ShoppingCartIcon />
+              <FastfoodIcon/>
             </ListItemIcon>
             <ListItemText primary="餐饮" />
           </ListItem>
+          <ListItem button onClick={() => history.push('/clean')}>
+            <ListItemIcon>
+              <DeleteIcon/>
+            </ListItemIcon>
+            <ListItemText primary="卫生" />
+          </ListItem>
           <ListItem button onClick={() => history.push('/study')}>
             <ListItemIcon>
-              <PeopleIcon />
+              <LocalLibraryIcon/>
             </ListItemIcon>
             <ListItemText primary="学习" />
           </ListItem>
           <ListItem button onClick={() => history.push('/attendance')}>
             <ListItemIcon>
-              <BarChartIcon />
+              <PlaylistAddCheckIcon/>
             </ListItemIcon>
-            <ListItemText primary="考勤" />
+            <ListItemText primary="出勤" />
           </ListItem>
         </List>
       </Drawer>
