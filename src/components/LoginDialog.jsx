@@ -12,6 +12,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { login } from '../api';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -40,11 +41,11 @@ const useStyles = makeStyles(theme => ({
       outline: 'none'
     },
   },
-  links:{
+  links: {
     color: '#3f51b5',
     cursor: 'pointer',
     fontSize: '0.9rem',
-    '&:hover':{
+    '&:hover': {
       textDecoration: 'underline',
     }
   }
@@ -52,7 +53,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function LoginDialog({ open, handleClose, handleOpenRegister }) {
   const classes = useStyles();
-  const handleClickRegister=()=>{
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const handleClickRegister = () => {
     handleClose();
     handleOpenRegister();
   };
@@ -71,54 +74,55 @@ export default function LoginDialog({ open, handleClose, handleOpenRegister }) {
           <Typography component="h1" variant="h5">
             登录
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="邮箱地址"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="密码"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              登录
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="邮箱地址"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="密码"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={() => login(username, password)}
+          >
+            登录
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Typography>
-                  忘记密码?
+          <Grid container>
+            <Grid item xs>
+              <Typography>
+                忘记密码?
                 </Typography>
-              </Grid>
-              <Grid item>
-                <Typography 
-                  onClick={handleClickRegister}
-                  className={classes.links}
-                >
-                  {"已有帐号？ 前去注册 >>"}
-                </Typography>
-              </Grid>
             </Grid>
-          </form>
+            <Grid item>
+              <Typography
+                onClick={handleClickRegister}
+                className={classes.links}
+              >
+                {"已有帐号？ 前去注册 >>"}
+              </Typography>
+            </Grid>
+          </Grid>
         </div>
       </Container>
     </Dialog>
