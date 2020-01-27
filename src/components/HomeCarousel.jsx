@@ -37,7 +37,7 @@ export default function HomeCarousel() {
     <Carousel>
       {images.map(image => {
         return (
-          <Carousel.Item className={classes.image}>
+          <Carousel.Item key={images.id} className={classes.image}>
             <img
               className="d-block w-100"
               src={image.src}

@@ -18,6 +18,7 @@ import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import PersonIcon from '@material-ui/icons/Person';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -39,6 +40,15 @@ import Study from '../pages/Study';
 import Clean from '../pages/Clean';
 import LoginDialog from '../components/LoginDialog';
 import RegisterDialog from '../components/RegisterDialog';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import { useEffect } from 'react';
 
 const drawerWidth = 240;
 
@@ -128,6 +138,10 @@ const useStyles = makeStyles(theme => ({
     '&:focus': {
       outline: 'none',
     },
+  },
+  logoutDialogTitle: {
+    backgroundColor: '#3f51b5',
+    color: '#FFFFFF',
   }
 }));
 
@@ -136,6 +150,10 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(false);
   const [showLoginDialog, setShowLoginDialog] = React.useState(false);
   const [showRegisterDialog, setShowRegisterDialog] = React.useState(false);
+  const [openSuccessAlert, setOpenSuccessAlert] = React.useState(false);
+  const [successAlert, setSuccessAlert] = React.useState("");
+  const [login, setLogin] = React.useState(false);
+  const [openLogoutDialog, setOpenLogoutDialog] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -143,9 +161,21 @@ export default function Dashboard() {
     setOpen(false);
   };
   const handleOpenLoginDialog = () => {
-    setShowLoginDialog(true)
+    setShowLoginDialog(true);
   };
+  const handleLogout = () => {
+    setOpenLogoutDialog(false);
+    setLogin(false);
+  };
+  useEffect(() => {
+    if (sessionStorage.getItem('username')) {
+      setLogin(true);
+    } else {
+      setLogin(false);
+    }
+  }, []);
   const history = useHistory();
+  console.log(login);
   return (
     <div className={classes.root}>
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -162,23 +192,47 @@ export default function Dashboard() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             [家庭名字 + Logo]
           </Typography>
-          <IconButton color="inherit"
-            className={classes.headerButton}
-            onClick={() => handleOpenLoginDialog()}
-          >
-            <PersonIcon />
-          </IconButton>
+          {login ? (
+            <>
+              <div className={classes.usernameDiv}>
+                <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                  {sessionStorage.getItem('username').length > 8 ? (
+                    sessionStorage.getItem('username').slice(0, 6) + '...'
+                  ) : (sessionStorage.getItem('username'))}
+                </Typography>
+              </div>
+              <IconButton color="inherit"
+                className={classes.headerButton}
+                onClick={() => setOpenLogoutDialog('true')}
+              >
+                <ExitToAppIcon />
+              </IconButton>
+            </>
+          ) : (
+              <IconButton color="inherit"
+                className={classes.headerButton}
+                onClick={() => handleOpenLoginDialog()}
+              >
+                <PersonIcon />
+              </IconButton>
+            )}
         </Toolbar>
       </AppBar>
       <LoginDialog
         open={showLoginDialog}
         handleClose={() => setShowLoginDialog(false)}
         handleOpenRegister={() => setShowRegisterDialog(true)}
+        setLogin={() => setLogin(true)}
+        setOpenSuccessAlert={setOpenSuccessAlert}
+        setSuccessAlert={setSuccessAlert}
       />
       <RegisterDialog
         open={showRegisterDialog}
         handleClose={() => setShowRegisterDialog(false)}
         handleOpenLogin={() => setShowLoginDialog(true)}
+        setLogin={() => setLogin(true)}
+        setOpenSuccessAlert={setOpenSuccessAlert}
+        setSuccessAlert={setSuccessAlert}
       />
       <Drawer
         variant="permanent"
@@ -202,25 +256,25 @@ export default function Dashboard() {
           </ListItem>
           <ListItem button onClick={() => history.push('/food')}>
             <ListItemIcon>
-              <FastfoodIcon/>
+              <FastfoodIcon />
             </ListItemIcon>
             <ListItemText primary="餐饮" />
           </ListItem>
           <ListItem button onClick={() => history.push('/clean')}>
             <ListItemIcon>
-              <DeleteIcon/>
+              <DeleteIcon />
             </ListItemIcon>
             <ListItemText primary="卫生" />
           </ListItem>
           <ListItem button onClick={() => history.push('/study')}>
             <ListItemIcon>
-              <LocalLibraryIcon/>
+              <LocalLibraryIcon />
             </ListItemIcon>
             <ListItemText primary="学习" />
           </ListItem>
           <ListItem button onClick={() => history.push('/attendance')}>
             <ListItemIcon>
-              <PlaylistAddCheckIcon/>
+              <PlaylistAddCheckIcon />
             </ListItemIcon>
             <ListItemText primary="出勤" />
           </ListItem>
@@ -235,6 +289,34 @@ export default function Dashboard() {
             <Route exact path="/attendance" component={Attendance} />
           </Switch>
         </Container>
+        <Snackbar open={openSuccessAlert} autoHideDuration={3000} onClose={() => setOpenSuccessAlert(false)}>
+          <Alert variant='filled' onClose={() => setOpenSuccessAlert(false)} severity="success">
+            {successAlert}
+          </Alert>
+        </Snackbar>
+        <Dialog
+          open={openLogoutDialog}
+          onClose={() => setOpenLogoutDialog(false)}
+        >
+          <DialogTitle className={classes.logoutDialogTitle}>{"注销"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              是否要注销账号?
+          </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenLogoutDialog(false)} color="primary">
+              <Typography component="h2" variant="h6" >
+                取消
+              </Typography>
+            </Button>
+            <Button onClick={handleLogout} color="primary" autoFocus>
+              <Typography component="h2" variant="h6" >
+                登出
+              </Typography>
+            </Button>
+          </DialogActions>
+        </Dialog>
       </main>
     </div>
   );

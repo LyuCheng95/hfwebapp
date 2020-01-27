@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -12,6 +12,8 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { register } from '../api';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -23,10 +25,6 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -47,31 +45,69 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       textDecoration: 'underline',
     },
+  },
+  container: {
+    width: '500px'
+  },
+  failureAlert: {
+    width: '100%',
+    marginTop: '10px',
   }
 }));
 
-export default function RegisterDialog({ open, handleClose, handleOpenLogin }) {
+export default function RegisterDialog({
+  open,
+  handleClose,
+  handleOpenLogin,
+  setOpenSuccessAlert,
+  setLogin,
+  setSuccessAlert }) {
   const classes = useStyles();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [failureAlert, setFailureAlert] = useState(false);
+  const [error, setError] = useState(false);
+  useEffect(() => {
+    if (repeatPassword == password) {
+      setError(false);
+    } else {
+      setError(true);
+    }
+  },[repeatPassword]);
+  const handleRegister = (username, password) => {
+    register(username, password).then(response => {
+      if (response.data.status == 0) {
+        setFailureAlert(true)
+      } else {
+        sessionStorage.setItem('username', username)
+        handleClose();
+        setOpenSuccessAlert(true);
+        setLogin(true)
+        setSuccessAlert('注册成功！');
+      }
+    });
+  }
   const handleClickLogin = () => {
     handleClose();
     handleOpenLogin();
   }
   return (
-    <Dialog open={open} >
-      <DialogTitle>
-        <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            注册
-          </Typography>
-          <form className={classes.form} noValidate>
+    <>
+      <Dialog open={open} >
+        <DialogTitle>
+          <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <Container component="main" maxWidth="xs" className={classes.container}>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              注册
+            </Typography>
             <TextField
               variant="outlined"
               margin="normal"
@@ -82,6 +118,7 @@ export default function RegisterDialog({ open, handleClose, handleOpenLogin }) {
               name="email"
               autoComplete="xxx@xxx.com"
               autoFocus
+              onChange={e => setUsername(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -93,9 +130,11 @@ export default function RegisterDialog({ open, handleClose, handleOpenLogin }) {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={e => setPassword(e.target.value)}
             />
             <TextField
               variant="outlined"
+              error={error}
               margin="normal"
               required
               fullWidth
@@ -104,13 +143,20 @@ export default function RegisterDialog({ open, handleClose, handleOpenLogin }) {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={e => setRepeatPassword(e.target.value)}
             />
+            {failureAlert ? (
+              <Alert className={classes.failureAlert} severity="error">
+                注册失败 
+              </Alert>
+            ) : null}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={() => handleRegister(username, password)}
             >
               注册
             </Button>
@@ -124,9 +170,9 @@ export default function RegisterDialog({ open, handleClose, handleOpenLogin }) {
                 </Typography>
               </Grid>
             </Grid>
-          </form>
-        </div>
-      </Container>
-    </Dialog>
+          </div>
+        </Container>
+      </Dialog>
+    </>
   );
 }
