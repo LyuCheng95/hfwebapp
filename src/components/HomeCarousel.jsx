@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Carousel from 'react-bootstrap/Carousel'
 import terrace1 from '../assets/terrace1.jpg';
 import terrace2 from '../assets/terrace2.jpg';
@@ -12,31 +13,31 @@ import terrace9 from '../assets/terrace9.jpg';
 import terrace10 from '../assets/terrace10.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function HomeCarousel() {
-  const images = [
-    { id: 1, src: terrace1, title: '标题', content: '介绍' },
-    { id: 2, src: terrace2, title: '标题', content: '介绍' },
-    { id: 3, src: terrace3, title: '标题', content: '介绍' },
-    { id: 4, src: terrace4, title: '标题', content: '介绍' },
-    // { id: 5, src: terrace5, title: '标题', content: '介绍' },
-    // { id: 6, src: terrace6, title: '标题', content: '介绍' },
-    // { id: 7, src: terrace7, title: '标题', content: '介绍' },
-    // { id: 8, src: terrace8, title: '标题', content: '介绍' },
-    // { id: 9, src: terrace9, title: '标题', content: '介绍' },
-    // { id: 10, src: terrace10, title: '标题', content: '介绍' },
-  ];
-  const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(null);
+const useStyles = makeStyles(theme => ({
+  image:{
+    height:'450px'
+  }
+}));
 
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-    setDirection(e.direction);
-  };
+export default function HomeCarousel() {
+  const classes = useStyles();
+  const images = [
+    { id: 1, src:  terrace1 , title: '标题', content: '介绍' },
+    { id: 2, src:  terrace2 , title: '标题', content: '介绍' },
+    { id: 3, src:  terrace3 , title: '标题', content: '介绍' },
+    { id: 4, src:  terrace4 , title: '标题', content: '介绍' },
+    { id: 5, src:  terrace5 , title: '标题', content: '介绍' },
+    { id: 6, src:  terrace6 , title: '标题', content: '介绍' },
+    { id: 7, src:  terrace7 , title: '标题', content: '介绍' },
+    { id: 8, src:  terrace8 , title: '标题', content: '介绍' },
+    { id: 9, src: terrace9 , title: '标题', content: '介绍' },
+    { id: 10, src:  terrace10 , title: '标题', content: '介绍' },
+  ];
   return (
-    <Carousel activeIndex={index} direction={direction} onSelect={handleSelect}>
+    <Carousel>
       {images.map(image => {
         return (
-          <Carousel.Item>
+          <Carousel.Item className={classes.image}>
             <img
               className="d-block w-100"
               src={image.src}
