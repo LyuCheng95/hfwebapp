@@ -196,8 +196,8 @@ export default function Dashboard() {
             <>
               <div className={classes.usernameDiv}>
                 <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                  {sessionStorage.getItem('username').length > 8 ? (
-                    sessionStorage.getItem('username').slice(0, 6) + '...'
+                  {sessionStorage.getItem('username').length > 15 ? (
+                    sessionStorage.getItem('username').slice(0, 13) + '...'
                   ) : (sessionStorage.getItem('username'))}
                 </Typography>
               </div>
