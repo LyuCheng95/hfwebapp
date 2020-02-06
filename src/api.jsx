@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const endpoint = 'https://absolute-nexus-265212.appspot.com/';
+const dev = false;
+
+const localEndPoint = 'localhost:5000/';
+const serverEndPoint = 'https://absolute-nexus-265212.appspot.com/';
+const endpoint = dev ? localEndPoint : serverEndPoint;
 export const login = (username, password) => {
   return axios.get(endpoint + 'login?username=' + username + '&password=' + password)
     .then(function (response) {
@@ -10,7 +14,7 @@ export const login = (username, password) => {
       // handle error
       console.log(error);
     });
-}
+};
 
 export const register = (username, password) => {
   return axios.get(endpoint + 'register?username=' + username + '&password=' + password)
@@ -21,7 +25,7 @@ export const register = (username, password) => {
       // handle error
       console.log(error);
     });
-}
+};
 
 export const person = (action, metaData) => {
   let request = endpoint + 'person?action=' + action;
@@ -39,15 +43,15 @@ export const person = (action, metaData) => {
       // handle error
       console.log(error);
     });
-}
+};
 
 export const attendance = (action, metaData) => {
   let request = endpoint + 'attendance?action=' + action;
-  metaData.forEach((key, value) => {
+  Object.keys(metaData).forEach(key => {
     request += '&';
     request += key;
     request += '=';
-    request += value;
+    request += metaData[key];
   });
   return axios.get(request)
     .then(function (response) {
@@ -57,4 +61,4 @@ export const attendance = (action, metaData) => {
       // handle error
       console.log(error);
     });
-}
+};

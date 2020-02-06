@@ -27,6 +27,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Fab from '@material-ui/core/Fab';
+import { person } from '../api';
 
 const useStyles = makeStyles({
   avatar: {
@@ -35,101 +36,150 @@ const useStyles = makeStyles({
   },
   listItem: {
     width: '200px',
+    '&:hover': {
+      backgroundColor: '#e8e8e8',
+    }
   },
   formControl: {
     marginRight: '20px',
-  }
+  },
+  deleteButton: {
+    height: '42px',
+    width: '42px',
+  },
+  nameInput: {
+    width: '60%'
+  },
 });
 
 export default function PersonManagementDialog(props) {
   const classes = useStyles();
-  const { onClose, open, personList } = props;
+  const { onClose, open, personList, setPersonList, setAlertData } = props;
   const staffList = personList.filter(person => person[1] === 'staff');
   const studentList = personList.filter(person => person[1] === 'student');
   const inputLabel = React.useRef(null);
-  const [newPerson, setNewPerson] = useState('');
+  const [newName, setNewName] = useState('');
   const [newRole, setNewRole] = useState('');
+  const [processing, setProcessing] = useState(false);
   const handleClose = () => {
     onClose();
   };
   const handleAddPerson = () => {
+    if (personList.map(p => p[0]).includes(newName)) {
+      setAlertData({ open: true, severity: 'error', content: '人员已存在' })
+    } else {
+      if (!processing) {
+        setProcessing(true);
+        person('add', { 'name': newName, 'role': newRole }).then(response => {
+          setProcessing(false)
+          setAlertData({ open: true, severity: 'success', content: '添加成功' })
+          setPersonList([...personList, [newName, newRole]]);
+        });
+      }
+    }
   };
-  return (
-    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-      <DialogTitle id="simple-dialog-title">人员管理</DialogTitle>
-      <Grid container direction='column'>
-        <Grid item>
-          <Grid container>
-            <Grid item>
-              <List>
-                {staffList.map(personInfo => (
-                  <ListItem className={classes.listItem} key={personInfo}>
-                    <ListItemAvatar>
-                      <Avatar className={classes.avatar}>
-                        <LocalLibraryIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={personInfo[0]} />
-                    <ListItemSecondaryAction>
-                      <Fab>
-                        <DeleteIcon />
-                      </Fab>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
-            </Grid>
-            <Grid item>
-              <List>
-                {studentList.map(personInfo => (
-                  <ListItem className={classes.listItem} key={personInfo}>
-                    <ListItemAvatar>
-                      <Avatar className={classes.avatar}>
-                        <WcIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={personInfo[0]} />
-                    <ListItemSecondaryAction>
-                      <Fab>
-                        <DeleteIcon />
-                      </Fab>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
+  const handleDeletePerson = name => {
+    if (!processing) {
+      setProcessing(true);
+      person('delete', { 'name': name }).then(response => {
+        setProcessing(false);
+        setAlertData({ open: true, severity: 'success', content: '删除成功' })
+        setPersonList(personList.filter(personInfo => personInfo[0] !== name));
+      });
+    };
+  }
+    return (
+      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+        <DialogTitle id="simple-dialog-title">人员管理</DialogTitle>
+        <Grid container direction='column'>
+          <Grid item>
+            <Grid container>
+              <Grid item>
+                <List>
+                  {staffList.map(personInfo => (
+                    <ListItem className={classes.listItem} key={personInfo}>
+                      <ListItemAvatar>
+                        <Avatar className={classes.avatar}>
+                          <LocalLibraryIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={personInfo[0]} />
+                      <ListItemSecondaryAction>
+                        <Fab
+                          className={classes.deleteButton}
+                          onClick={() => handleDeletePerson(personInfo[0])}
+                        >
+                          <DeleteIcon />
+                        </Fab>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+              </Grid>
+              <Grid item>
+                <List>
+                  {studentList.map(personInfo => (
+                    <ListItem className={classes.listItem} key={personInfo}>
+                      <ListItemAvatar>
+                        <Avatar className={classes.avatar}>
+                          <WcIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={personInfo[0]} />
+                      <ListItemSecondaryAction>
+                        <Fab
+                          className={classes.deleteButton}
+                          onClick={() => handleDeletePerson(personInfo[0])}
+                        >
+                          <DeleteIcon />
+                        </Fab>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+              </Grid>
             </Grid>
           </Grid>
+          <Divider />
+          <Grid item>
+            <List>
+              <ListItem>
+                <FormControl variant="filled" className={classes.formControl}>
+                  <InputLabel htmlFor="filled-age-native-simple">身份</InputLabel>
+                  <Select
+                    native
+                    value={newRole}
+                    onChange={e => setNewRole(e.target.value)}
+                    inputProps={{
+                      name: 'newRole',
+                      id: 'filled-age-native-simple',
+                    }}
+                  >
+                    <option value="" />
+                    <option value={'staff'}>老师</option>
+                    <option value={'student'}>学生</option>
+                  </Select>
+                </FormControl>
+                <TextField
+                  value={newName}
+                  onChange={e => setNewName(e.target.value)}
+                  id="filled-basic"
+                  label="姓名"
+                  variant="filled"
+                  className={classes.nameInput}
+                />
+                <ListItemSecondaryAction>
+                  <Fab
+                    className={classes.deleteButton}
+                    onClick={handleAddPerson}
+                  >
+                    <AddIcon />
+                  </Fab>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </List>
+          </Grid>
         </Grid>
-        <Divider />
-        <Grid item>
-          <List>
-            <ListItem>
-              <FormControl variant="filled" className={classes.formControl}>
-                <InputLabel htmlFor="filled-age-native-simple">身份</InputLabel>
-                <Select
-                  native
-                  value={newRole}
-                  onChange={e => setNewRole(e.target.value)}
-                  inputProps={{
-                    name: 'newRole',
-                    id: 'filled-age-native-simple',
-                  }}
-                >
-                  <option value="" />
-                  <option value={'老师'}>老师</option>
-                  <option value={'学生'}>学生</option>
-                </Select>
-              </FormControl>
-              <TextField id="filled-basic" label="姓名" variant="filled" />
-              <ListItemSecondaryAction>
-                <Avatar>
-                  <AddIcon />
-                </Avatar>
-              </ListItemSecondaryAction>
-            </ListItem>
-          </List>
-        </Grid>
-      </Grid>
-    </Dialog>
-  );
-}
+      </Dialog>
+    );
+  }

@@ -175,7 +175,6 @@ export default function Dashboard() {
     }
   }, []);
   const history = useHistory();
-  console.log(login);
   return (
     <div className={classes.root}>
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
